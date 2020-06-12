@@ -1,0 +1,13 @@
+.el-header {
+    background-color: #409EFF;
+    color: white;
+    line-height: 60px;
+}
+
+.el-aside {
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+}

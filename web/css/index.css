@@ -1,0 +1,111 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.el-header,
+.el-footer {
+    background-color: white;
+    color:#409EFF;
+    text-align: center;
+    line-height: 60px;
+}
+
+.el-aside {
+    background-color: #D3DCE6;
+    color: #333;
+    text-align: center;
+    line-height: 200px;
+}
+
+.el-main {
+    background-color: #E9EEF3;
+    color: #333;
+    text-align: center;
+    line-height: 160px;
+}
+
+body>.el-container {
+    margin-bottom: 40px;
+}
+
+.el-container:nth-child(5) .el-aside,
+.el-container:nth-child(6) .el-aside {
+    line-height: 260px;
+}
+
+.el-container:nth-child(7) .el-aside {
+    line-height: 320px;
+}
+
+.el-carousel__item h3 {
+    color: #475669;
+    font-size: 18px;
+    opacity: 0.75;
+    line-height: 300px;
+    margin: 0;
+}
+
+.el-carousel__item:nth-child(3) {
+    background-color: saddlebrown;
+}
+
+.el-carousel__item:nth-child(4) {
+    background-color: #409EFF;
+}
+
+.el-carousel__item:nth-child(5) {
+    background-color: black;
+}
+
+.el-carousel__item:nth-child(6) {
+    background-color: bisque;
+}
+
+a {
+    text-decoration: none;
+}
+
+.time {
+    font-size: 13px;
+    color: #999;
+}
+
+.bottom {
+    margin-top: 13px;
+    line-height: 20px;
+}
+
+.button {
+    margin-left: 10px;
+    float: right;
+}
+
+.image {
+    width: 100%;
+    display: block;
+}
+
+.clearfix:before,
+.clearfix:after {
+    display: table;
+    content: "";
+}
+
+.clearfix:after {
+    clear: both
+}
+.block{
+    height: 110px;
+    background-image: url(../image/小店.png);
+    background-repeat: no-repeat;
+    background-size: 100%, 100%;
+}
+.price{
+    margin-bottom: 10px;
+    color: #409EFF;
+    font-size: 20px;
+}
+.goods_id{
+    margin-bottom: 30px;
+}
