@@ -1,0 +1,30 @@
+body{
+    background-image: url('../image/云朵.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.text {
+    font-size: 14px;
+}
+
+.item {
+    margin-bottom: 18px;
+}
+
+.clearfix:before,
+.clearfix:after {
+    display: table;
+    content: "";
+}
+
+.clearfix:after {
+    clear: both
+}
+
+.box-card {
+    width: 480px;
+}
+#app{
+    margin-top: 180px;
+    margin-left: 500px;
+}
