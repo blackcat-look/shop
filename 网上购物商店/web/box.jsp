@@ -28,20 +28,10 @@
 <body>
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script src="https://unpkg.com/element-ui@2.13.2/lib/index.js"></script>
-<%
-    request.setCharacterEncoding("UTF-8");
-    String username1=(String)session.getAttribute("userName1");
-    Vector goods=(Vector)session.getAttribute("box");
-    if(goods==null) goods=new Vector();
-    String[] g=request.getParameterValues("choice");
-    if(g!=null){
-        for(int i=0;i<g.length;i++){
-            goods.add(g[i]);
-        }
-    }
-    session.setAttribute("box",goods);
-%>
-<div id="app">p
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
+
+<div id="app">
     <el-header>
         我的购物车
     </el-header>
@@ -52,7 +42,16 @@
             </template>
         </el-table-column>
         <el-table-column prop="name" label="商品名称" width="180"></el-table-column>
-        <el-table-column prop="price" label="商品单价" width="180"></el-table-column>
+        <el-table-column prop="image" label="商品图片" width="180">
+            <template slot-scope="scope">
+                <img :src="scope.row.image" alt="图片加载失败" style="height: 100px;width: 100px;">
+            </template>
+        </el-table-column>
+        <el-table-column prop="price" label="商品单价" width="180">
+            <template slot-scope="scope">
+                <div>￥{{scope.row.price}}</div>
+            </template>
+        </el-table-column>
         <el-table-column label="商品数量" width="380">
             <template scope="scope">
                 <el-input-number v-model="scope.row.num" controls-position="right" :min="1" :max="scope.row.number">
@@ -89,21 +88,6 @@
         </el-popconfirm>
     </el-footer>
 
-    <!-- <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="商品价钱" prop="age">
-            <el-input v-model.number="ruleForm2.age"></el-input>
-        </el-form-item>
-        <el-form-item label="商品名称" prop="name">
-                <el-input v-model="ruleForm2.name"></el-input>
-            </el-form-item>
-            <el-form-item label="商品数量" prop="price">
-                    <el-input v-model.number="ruleForm2.price"></el-input>
-                </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm2')">提交</el-button>
-            <el-button @click="resetForm('ruleForm2')">重置</el-button>
-        </el-form-item>
-    </el-form> -->
 </div>
 <style>
     .warning-row {
@@ -131,33 +115,8 @@
                 }, 1000);
             };
             return {
-                list: [{
-                    id: 1,
-                    name: "打火机",
-                    price: 3,
-                    number: 10,
-                    checked: false,
-                    num: 1,
-                    remove: false
-                },
-                    {
-                        id: 2,
-                        name: "冰淇淋",
-                        price: 10,
-                        number: 10,
-                        checked: false,
-                        num: 1,
-                        remove: false
-                    },
-                    {
-                        id: 3,
-                        name: "冰淇淋",
-                        price: 7,
-                        number: 10,
-                        checked: false,
-                        num: 1,
-                        remove: false
-                    }
+                 list: [
+
                 ],
                 count: 0,
                 istrue: false,
@@ -206,15 +165,28 @@
         },
         methods: {
             removeId(value) {
-                var ids = value.id
+                var names = value.name
                 for (var i = 0; i < this.list.length; i++) {
-                    if (ids == this.list[i].id) {
+                    if (names == this.list[i].name) {
+                        let postData = Qs.stringify({
+                           goods_id:this.list[i].name
+                        });
+                        axios({
+                            method: 'post',
+                            url:'DeleteServlet',
+                            headers: {'content-type': 'application/x-www-form-urlencoded'},
+                            data:postData
+                        }).then(function (response) {
+                            console.log(response);
+                        }).catch(function (error) {
+                            console.log(error);
+                        })
                         this.list.splice(i, 1)
                     }
                 }
             },
             renderHeader: function (h, params) {//实现table表头添加
-                var self = this;
+                let self = this;
                 return h('div', [
                     h('el-checkbox', {
                         on: {
@@ -226,27 +198,42 @@
                 ]);
 
             },
-            submitForm(formName) {//实现点击添加
-                let self = this;
-                let counts = 40;
-                counts++;
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        self.list.push({ id: counts, name: self.ruleForm2.name, price: self.ruleForm2.price, number: self.ruleForm2.age, checked: false, num: 1, remove: false });
-                        self.$refs[formName].resetFields();//数据清空方法
-                        self.$message({
-                            message: '恭喜你，商品已经成功添加',
-                            type: 'success'
-                        });
-                    } else {
-                        alert('error submit!!');
-                        return false;
-                    }
-                });
-            },
             resetForm(formName) {
                 this.$refs[formName].resetFields();//数据清空方法
+            },
+            getbox(){
+                let that = this;
+                let counts = 40;
+                counts++;
+                axios({
+                    method:'get',
+                    url:'BoxServlet',
+                    headers: {'content-type': 'application/x-www-form-urlencoded'},
+                }).then(function (response) {
+                    console.log(response.data.box);
+                    let boxarray = new Array();
+                    boxarray = response.data.box;
+                    for(i in boxarray)
+                    {
+                        that.list.push({
+                            id: counts,
+                            name: boxarray[i].goods_id,
+                            image:boxarray[i].image,
+                            price: boxarray[i].price,
+                            number: 100,
+                            checked: false,
+                            num: 1,
+                            remove: false
+                        });
+                        console.log(counts);
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                })
             }
+        },
+        mounted() {
+            this.getbox();
         }
     })
 </script>
