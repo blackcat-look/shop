@@ -14,19 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <title>注册页面</title>
-    <style>
-        .el-header {
-            background-color: #409EFF;
-            color: white;
-            line-height: 60px;
-            text-decoration;
-        }
-
-        .el-main {
-            margin-left: 500px;
-            width: 500px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/register.css">
 </head>
 
 <body>
@@ -35,10 +23,11 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
 <div id="app">
-    <el-header>
-        注册页面
-    </el-header>
     <el-main>
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <span>欢迎注册</span>
+            </div>
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <el-form-item label="昵称" prop="name">
                 <el-input v-model="ruleForm.name"></el-input>
@@ -72,6 +61,7 @@
                 <el-button @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
         </el-form>
+        </el-card>
     </el-main>
 </div>
 
@@ -151,18 +141,23 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
+                        let postData = Qs.stringify({
+                            user_id:this.ruleForm.name,
+                            sex:this.ruleForm.resource,
+                            address:this.ruleForm.region,
+                            telephone:this.ruleForm.telephone,
+                            password:this.ruleForm.pass
+                        });
                         axios({
-                            method:"post",
-                            url:"/RegisterServlet",
-                            data:{
-                                user_id:'123',
-                                password:'456'
-                            }
-                        }).then(function(response){
-                            console.log(response);
-                        }).catch(function(error){
-                                console.log(error);
-                            });
+                            method:'post',
+                            url:'RegisterServlet',
+                            headers: {'content-type': 'application/x-www-form-urlencoded'},
+                            data: postData
+                        }).then(function (response) {
+                            location.href="http://localhost:8080/_war_exploded/login.jsp";
+                        }).catch(function (error) {
+                            console.log(error);
+                        })
                     } else {
                         console.log('error submit!!');
                         return false;
